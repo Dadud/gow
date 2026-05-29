@@ -18,8 +18,8 @@ mounts = [
 ```
 
 The Unraid plugin applies this when **Lutris library** is set in Setup and you run
-**Fix mounts**. The default Wolf preset `lutris:/var/lutris/:rw` uses an empty Docker
-volume until replaced by a host path.
+**Fix mounts**. The Wolf preset ships with `mounts = []` so the plugin can bind your
+host path instead of an anonymous Docker volume.
 
 # Gamepad-UI
 ![lutris-gamepad-ui](assets/gamepadui.png)
