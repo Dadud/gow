@@ -6,6 +6,10 @@
 
 gow_log "[start-create-dirs] Begin"
 
+if [[ ! -w /var/lutris ]] 2>/dev/null; then
+    gow_log "WARN: /var/lutris is not writable — bind-mount your Lutris library path in Wolf config (plugin Fix mounts)"
+fi
+
 if [ ${WOLF_LUTRIS_SKIP_CREATE_DIRS:-0} -eq 0 ]; then
 
 # "library" will contain information about available games and installed games.

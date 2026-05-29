@@ -4,8 +4,13 @@ set -e
 source /opt/gow/bash-lib/utils.sh
 source /opt/gow/launch-comp.sh
 
-gow_log "Symlinking Bioses from /Bioses"
+gow_log "Symlinking Bioses and ROMs from host mounts"
 ln -sf /bioses $HOME
+ln -sf /ROMs "${HOME}/ROMs" 2>/dev/null || true
+
+if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
+    gow_log "WARN: /ROMs is empty — configure ROMs library in the plugin and run Fix mounts"
+fi
 
 #########################################
 # Configure Pegasus

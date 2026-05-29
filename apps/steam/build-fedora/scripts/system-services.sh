@@ -43,11 +43,11 @@ if [ -d "$STEAMDIR_LEGACY" ] && [ ! -L "$STEAMDIR_LEGACY" ]; then
   gow_log "*** library, move ~/.steam/steam/* into ~/.local/share/Steam/ ***"
   gow_log "*** manually, then remove ~/.steam so the symlink can be      ***"
   gow_log "*** recreated on the next boot.                               ***"
-  # Bail before Steam launches: starting Steam against a real (non-symlink)
-  # ~/.steam/steam can confuse the client and a half-broken first run is
-  # the kind of thing that ends in lost data. Better to fail cont-init
-  # loudly so the human notices than to limp on.
-  exit 1
+  if [[ ! -w "$STEAMDIR" ]]; then
+    gow_log "WARN: Continuing anyway — ensure Steam library host mount is configured (plugin Fix mounts)"
+  else
+    gow_log "WARN: Continuing — Steam library bind mount is present; fix ~/.steam/steam when convenient"
+  fi
 fi
 
 # Install Decky Loader. The PluginLoader binary is baked into the image

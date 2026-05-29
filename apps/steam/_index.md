@@ -7,6 +7,24 @@ It offers a vast library of games, community features, and cloud saving.
 
 ## Customization
 
+### Steam library bind mount
+
+Steam installs games under `~/.local/share/Steam` (especially `steamapps/`). Wolf must
+bind your host Steam library into the session container, for example:
+
+```toml
+mounts = [
+    "/mnt/user/steam:/home/retro/.local/share/Steam:rw",
+]
+```
+
+The Unraid plugin writes this automatically when you set **Steam library** in Setup and
+run **Advanced → Fix mounts**. Mounting only into the Wolf service at `/etc/wolf/steam`
+does **not** expose your library to the Steam app.
+
+Proton compatibility data uses `~/.local/share/WolfSteam/pfx` by default on the Fedora
+image; game installs themselves should live on the bound Steam library path.
+
 ### Directly launch a Steam game
 
 In order to directly launch a Steam game from Moonlight you can just copy the existing `[[apps]]` entry for Steam,

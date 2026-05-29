@@ -5,6 +5,11 @@ source /opt/gow/bash-lib/utils.sh
 
 gow_log "Starting RetroArch"
 
+if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
+    gow_log "WARN: /ROMs is empty — configure ROMs library in the plugin and run Fix mounts"
+fi
+ln -sf /ROMs "${HOME}/ROMs" 2>/dev/null || true
+
 CFG_DIR=$HOME/.config/retroarch
 
 # Copying config in case it's the first time we mount from the host

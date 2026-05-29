@@ -5,8 +5,21 @@ source /opt/gow/bash-lib/utils.sh
 
 gow_log "Steam startup.sh"
 
+STEAMDIR="${HOME}/.local/share/Steam"
+mkdir -p "$STEAMDIR"
+if [[ ! -w "$STEAMDIR" ]]; then
+    gow_log "WARN: Steam directory is not writable — set Steam library in the plugin and run Fix mounts"
+fi
+STEAMDIR_LEGACY="${HOME}/.steam/steam"
+mkdir -p "$(dirname "$STEAMDIR_LEGACY")"
+if [[ -L "$STEAMDIR_LEGACY" ]] || [[ ! -e "$STEAMDIR_LEGACY" ]]; then
+    ln -sfn "$STEAMDIR" "$STEAMDIR_LEGACY"
+elif [[ -d "$STEAMDIR_LEGACY" ]] && [[ -z "$(ls -A "$STEAMDIR_LEGACY" 2>/dev/null)" ]]; then
+    rmdir "$STEAMDIR_LEGACY" && ln -sfn "$STEAMDIR" "$STEAMDIR_LEGACY"
+fi
+
 # Recursively creating Steam necessary folders (https://github.com/ValveSoftware/steam-for-linux/issues/6492)
-mkdir -p "$HOME/.local/share/Steam/ubuntu12_32/steam-runtime"
+mkdir -p "$STEAMDIR/ubuntu12_32/steam-runtime"
 export WINEPREFIX="$HOME/.local/share/WolfSteam/pfx"
 export STEAM_COMPAT_DATA_PATH="$WINEPREFIX"
 

@@ -5,6 +5,14 @@ source /opt/gow/bash-lib/utils.sh
 
 gow_log "Starting Application preparation"
 
+gow_log "Library symlinks for emulator configs"
+ln -sf /ROMs "${HOME}/ROMs" 2>/dev/null || true
+ln -sf /bioses "${HOME}/bioses" 2>/dev/null || true
+
+if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
+    gow_log "WARN: /ROMs is empty — set ROMs library in the plugin and run Fix mounts, then relaunch ES-DE"
+fi
+
 RA_CFG_DIR=$HOME/.config/retroarch
 RPCS3_CFG_DIR=$HOME/.config/rpcs3
 XEMU_CFG_DIR=$HOME/.local/share/xemu
@@ -47,7 +55,13 @@ if test -f $HOME/bioses/xbox_hdd.qcow2; then
 fi
 
 if test -f $ES_CFG_DIR/settings/es_settings.xml; then
-    gow_log "EmulationStation settings already exist, skipping"
+    gow_log "EmulationStation settings already exist, checking ROMDirectory"
+    if grep -q 'name="ROMDirectory"' "$ES_CFG_DIR/settings/es_settings.xml" \
+        && ! grep -q 'name="ROMDirectory" value="/ROMs"' "$ES_CFG_DIR/settings/es_settings.xml"; then
+        gow_log "Normalizing ROMDirectory to /ROMs in es_settings.xml"
+        sed -i 's/name="ROMDirectory" value="[^"]*"/name="ROMDirectory" value="\/ROMs"/' \
+            "$ES_CFG_DIR/settings/es_settings.xml"
+    fi
 else
   mkdir -p $ES_CFG_DIR/settings/
   cp -u /cfg/es/es_settings.xml $ES_CFG_DIR/settings/es_settings.xml
