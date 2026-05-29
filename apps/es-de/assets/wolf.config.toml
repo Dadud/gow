@@ -6,7 +6,13 @@ icon_png_path = "https://games-on-whales.github.io/wildlife/apps/es-de/assets/ic
 type = "docker"
 name = "WolfES-DE"
 image = "ghcr.io/games-on-whales/es-de:edge"
-mounts = []
+# ES-DE looks for games under /ROMs and BIOS files under /bioses inside the
+# container. Uncomment and adjust the host paths below to expose your library
+# (left of ':' is the host path, right is the in-container path).
+mounts = [
+  # "/mnt/user/roms:/ROMs:rw",
+  # "/mnt/user/bios:/bioses:rw",
+]
 env = ["RUN_SWAY=1", "MOZ_ENABLE_WAYLAND=1", "GOW_REQUIRED_DEVICES=/dev/input/* /dev/dri/* /dev/nvidia*", ]
 devices = []
 ports = []
