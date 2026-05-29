@@ -46,3 +46,7 @@ docker build -t gow/base-app --build-arg BASE_IMAGE=gow/base images/base-app/bui
 Now you can use `gow/base-app` as the base image for your custom image.
 
 {{% /details %}}
+
+## Testing on Unraid (Games on Whales plugin)
+
+On Unraid, library bind mounts are applied by the [Games on Whales Unraid plugin](https://github.com/games-on-whales/unraid-plugin) into Wolf's `config.toml` (not only into the Wolf service container). After building Fedora app images locally, use the plugin's `dev-install-test.sh` to wipe, patch `runner.image`, run **Fix mounts**, and verify session mounts. See the plugin's `DEVELOPING.md` section *Clean install with custom GOW images*.
