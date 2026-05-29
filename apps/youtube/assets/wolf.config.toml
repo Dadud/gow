@@ -7,7 +7,7 @@ type = "docker"
 name = "WolfYouTube"
 image = "ghcr.io/games-on-whales/youtube:edge"
 mounts = []
-env = ["RUN_SWAY=1", "GOW_REQUIRED_DEVICES=/dev/input/* /dev/dri/* /dev/nvidia*"]
+env = ["RUN_SWAY=true", "GOW_REQUIRED_DEVICES=/dev/input/* /dev/dri/* /dev/nvidia*"]
 devices = []
 ports = []
 base_create_json = """
