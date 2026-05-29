@@ -13,7 +13,7 @@ git checkout -b cursor/unraid-dev-install-mounts-8e3e
 
 # Copy from this gow branch
 GOW_SRC=/path/to/gow   # clone Dadud/gow, branch export/unraid-plugin-mounts
-rsync -av "$GOW_SRC/contrib/unraid-plugin/scripts/" scripts/
+cp -a "$GOW_SRC/contrib/unraid-plugin/scripts/." scripts/
 # Merge DEVELOPING.md section from contrib/unraid-plugin/DEVELOPING.snippet.md (bottom)
 
 git add scripts/ DEVELOPING.md
