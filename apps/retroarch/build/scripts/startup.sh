@@ -3,7 +3,24 @@ set -e
 
 source /opt/gow/bash-lib/utils.sh
 
+# Link bind-mount paths into $HOME without nesting inside existing directories.
+_link_host_mount() {
+    local target=$1 link=$2
+    if [[ -L "$link" ]] || [[ ! -e "$link" ]]; then
+        ln -sfn "$target" "$link"
+    elif [[ -d "$link" ]] && [[ -z "$(ls -A "$link" 2>/dev/null)" ]]; then
+        rmdir "$link" && ln -sfn "$target" "$link"
+    else
+        gow_log "WARN: ${link} is a non-empty directory; remove or merge into ${target} so host mounts work"
+    fi
+}
+
 gow_log "Starting RetroArch"
+
+if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
+    gow_log "WARN: /ROMs is empty — configure ROMs library in the plugin and run Fix mounts"
+fi
+_link_host_mount /ROMs "${HOME}/ROMs"
 
 CFG_DIR=$HOME/.config/retroarch
 
