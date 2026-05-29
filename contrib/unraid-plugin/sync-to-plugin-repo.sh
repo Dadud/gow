@@ -13,7 +13,7 @@ EXPORT_DIR="$GOW_ROOT/contrib/unraid-plugin"
 cd "$PLUGIN_REPO"
 git checkout -B "$BRANCH"
 
-rsync -av "$EXPORT_DIR/scripts/" scripts/
+cp -a "$EXPORT_DIR/scripts/." scripts/
 chmod +x scripts/dev-install-test.sh scripts/verify-session-mounts.sh \
     scripts/test-mount-verification.sh scripts/patch-dev-images.py 2>/dev/null || true
 
