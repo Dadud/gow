@@ -1,0 +1,23 @@
+name: Validate presets
+
+on:
+  pull_request:
+    paths:
+      - "apps/**"
+      - "bin/validate-presets.py"
+      - ".github/workflows/validate-presets.yml"
+
+jobs:
+  validate-presets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate Wolf presets
+        run: python3 bin/validate-presets.py
