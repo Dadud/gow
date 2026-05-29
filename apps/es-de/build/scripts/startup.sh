@@ -3,12 +3,24 @@ set -e
 
 source /opt/gow/bash-lib/utils.sh
 
+# Link bind-mount paths into $HOME without nesting inside existing directories.
+_link_host_mount() {
+    local target=$1 link=$2
+    if [[ -L "$link" ]] || [[ ! -e "$link" ]]; then
+        ln -sfn "$target" "$link"
+    elif [[ -d "$link" ]] && [[ -z "$(ls -A "$link" 2>/dev/null)" ]]; then
+        rmdir "$link" && ln -sfn "$target" "$link"
+    else
+        gow_log "WARN: ${link} is a non-empty directory; remove or merge into ${target} so host mounts work"
+    fi
+}
+
 gow_log "Starting Application preparation"
 
 # Host bind mounts from Wolf config.toml land at /ROMs, /bioses, /media.
 gow_log "Library symlinks for emulator configs"
-ln -sf /ROMs "${HOME}/ROMs" 2>/dev/null || true
-ln -sf /bioses "${HOME}/bioses" 2>/dev/null || true
+_link_host_mount /ROMs "${HOME}/ROMs"
+_link_host_mount /bioses "${HOME}/bioses"
 
 if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
     gow_log "WARN: /ROMs is empty — set ROMs library in the plugin and run Fix mounts, then relaunch ES-DE"

@@ -17,6 +17,8 @@ if [[ -L "$STEAMDIR_LEGACY" ]] || [[ ! -e "$STEAMDIR_LEGACY" ]]; then
     ln -sfn "$STEAMDIR" "$STEAMDIR_LEGACY"
 elif [[ -d "$STEAMDIR_LEGACY" ]] && [[ -z "$(ls -A "$STEAMDIR_LEGACY" 2>/dev/null)" ]]; then
     rmdir "$STEAMDIR_LEGACY" && ln -sfn "$STEAMDIR" "$STEAMDIR_LEGACY"
+else
+    gow_log "WARN: ${STEAMDIR_LEGACY} is a non-empty directory; refusing to replace with symlink (manual cleanup required)"
 fi
 
 # Recursively creating Steam necessary folders (https://github.com/ValveSoftware/steam-for-linux/issues/6492)
