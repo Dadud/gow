@@ -3,7 +3,28 @@ set -e
 
 source /opt/gow/bash-lib/utils.sh
 
+# Link bind-mount paths into $HOME without nesting inside existing directories.
+_link_host_mount() {
+    local target=$1 link=$2
+    if [[ -L "$link" ]] || [[ ! -e "$link" ]]; then
+        ln -sfn "$target" "$link"
+    elif [[ -d "$link" ]] && [[ -z "$(ls -A "$link" 2>/dev/null)" ]]; then
+        rmdir "$link" && ln -sfn "$target" "$link"
+    else
+        gow_log "WARN: ${link} is a non-empty directory; remove or merge into ${target} so host mounts work"
+    fi
+}
+
 gow_log "Starting Application preparation"
+
+# Host bind mounts from Wolf config.toml land at /ROMs, /bioses, /media.
+gow_log "Library symlinks for emulator configs"
+_link_host_mount /ROMs "${HOME}/ROMs"
+_link_host_mount /bioses "${HOME}/bioses"
+
+if [[ -d /ROMs ]] && [[ -z "$(ls -A /ROMs 2>/dev/null)" ]]; then
+    gow_log "WARN: /ROMs is empty — set ROMs library in the plugin and run Fix mounts, then relaunch ES-DE"
+fi
 
 RA_CFG_DIR=$HOME/.config/retroarch
 RPCS3_CFG_DIR=$HOME/.config/rpcs3
@@ -47,7 +68,13 @@ if test -f $HOME/bioses/xbox_hdd.qcow2; then
 fi
 
 if test -f $ES_CFG_DIR/settings/es_settings.xml; then
-    gow_log "EmulationStation settings already exist, skipping"
+    gow_log "EmulationStation settings already exist, checking ROMDirectory"
+    if grep -q 'name="ROMDirectory"' "$ES_CFG_DIR/settings/es_settings.xml" \
+        && ! grep -q 'name="ROMDirectory" value="/ROMs"' "$ES_CFG_DIR/settings/es_settings.xml"; then
+        gow_log "Normalizing ROMDirectory to /ROMs in es_settings.xml"
+        sed -i 's/name="ROMDirectory" value="[^"]*"/name="ROMDirectory" value="\/ROMs"/' \
+            "$ES_CFG_DIR/settings/es_settings.xml"
+    fi
 else
   mkdir -p $ES_CFG_DIR/settings/
   cp -u /cfg/es/es_settings.xml $ES_CFG_DIR/settings/es_settings.xml

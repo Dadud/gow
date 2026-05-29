@@ -6,6 +6,21 @@ An open-source gaming platform for Linux that allows you to install and manage g
 including Steam, GOG, and more.
 It simplifies the process of running games on Linux.
 
+## Lutris library bind mount
+
+Lutris stores runners, metadata, and game installs under `/var/lutris` (with symlinks from
+`~/.config/lutris` and `~/.local/share/lutris`). Bind your host Lutris data directory:
+
+```toml
+mounts = [
+    "/mnt/user/appdata/gow/lutris:/var/lutris:rw",
+]
+```
+
+The Unraid plugin applies this when **Lutris library** is set in Setup and you run
+**Fix mounts**. The Wolf preset ships with `mounts = []` so the plugin can bind your
+host path instead of an anonymous Docker volume.
+
 # Gamepad-UI
 ![lutris-gamepad-ui](assets/gamepadui.png)
 
