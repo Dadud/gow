@@ -8,7 +8,13 @@ name = 'WolfRetroarch'
 image = 'ghcr.io/games-on-whales/retroarch:edge'
 env = ['RUN_SWAY=true', 'GOW_REQUIRED_DEVICES=/dev/input/* /dev/dri/* /dev/nvidia*']
 devices = []
-mounts = []
+# RetroArch looks for game ROMs under /ROMs and BIOS files under /bioses inside
+# the container. Uncomment and adjust the host paths below to expose your
+# library (left of ':' is the host path, right is the in-container path).
+mounts = [
+  # "/mnt/user/roms:/ROMs:rw",
+  # "/mnt/user/bios:/bioses:rw",
+]
 ports = []
 base_create_json = """
 {
